@@ -1,14 +1,28 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, inject } from 'vue'
 const
     _todo_text = ref(''),
+    _result = ref(null),
     _todo_list = ref([]),
     _pending = computed(() => {
             return _todo_list.value.filter(item =>!item.checked)
         }),
     _done = computed(() => {
             return _todo_list.value.filter(item => item.checked)
-        })
+        }),
+    $modals = inject('$modals')
+function onModalClick () {
+    $modals.show('Modal').then(
+        () => {
+            _result.value = true
+        }, 
+        () => {
+            _result.value = false
+        }
+    ).finally(() => {
+        console.log(_result.value)
+    })
+}
 function clearToDo() {_todo_text.value = ''}
 function addToDo() {
     if (_todo_text.value && _todo_text.value !== "") {
@@ -24,6 +38,9 @@ function addToDo() {
 
 <template>
     <div class="todo-container w3-white w3-card-4">
+        <Modal name="Modal" title="Modal Title">
+            My Content
+        </Modal>
         <div class="w3-container w3-black w3-margin-0
             w3-bottombar w3-border-blue">
             <h1>
@@ -45,6 +62,9 @@ function addToDo() {
             </button>
             <button class="w3-button w3-blue" @click="addToDo()">
                 <i class="fa-solid fa-plus"></i>
+            </button>
+            <button class="w3-button w3-blue" @click="onModalClick">
+                <i class="fa-solid fa-minus"></i>
             </button>
         </div>
         <div class="w3-padding w3-blue">

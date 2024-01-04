@@ -1,22 +1,26 @@
 import { reactive } from "vue"
 import Modal from "./Modal.vue"
+
 const
-    _current = reactive({name:"",resolve:null,reject:null}),
+    _current = reactive({
+        name: "",
+        resolve: null,
+        reject: null
+    }),
     api = {
         active() {
             return _current.name;
         },
         show(name) {
-              _current.name = name;
-              return new Promise(
-                  (resolve = () => { }, reject = () => { }) => {
-                    _current.resolve = resolve;
-                    _current.reject = reject;
-                  })
+            _current.name = name;
+            return new Promise((resolve = () => { }, reject = () => { }) => {
+                _current.resolve = resolve;
+                _current.reject = reject;
+            })
         },
         accept() {
             _current.resolve();
-            _current.name = "";
+            _current.name = ""
         },
         cancel() {
             _current.reject();
@@ -24,9 +28,14 @@ const
         }
     },
     plugin = {
-          install(App, options) {
-              App.component("Modal", Modal)
-              App.provide("$modals", api)
-          }
+        install(App, options) {
+
+            // Register global component
+            App.component("Modal", Modal);
+
+            // Provide API
+            App.provide("$modals", api)
+        }
     }
-export default plugin
+
+export default plugin;
